@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>LEAD Rescue</title>
+
+
+
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet"> 
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>  
+</head>
+<body>
+    <div id = "info"> 
+      <h2 style> Dogs! <h2></div>
+		<div id="map" style="width: 800px; height: 800px"></div>
+
+
+		<script>
+  		  var map = L.map('map',{ center: [41.87, -87.70], zoom: 11});
+
+  		  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '© OpenStreetMap' }).addTo(map); 
+
+   			    $.getJSON("dogs.geojson",function(data){
+    			// add GeoJSON layer to the map once the file is loaded
+   				 L.geoJson(data, {
+
+				    onEachFeature: function( feature, layer ){
+				      layer.bindPopup( "<strong>" + feature.properties.Name + "</strong><br/>")
+				    }
+  					}  ).addTo(map);
+  				});
+
+
+		</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+</div>
+
+</body>
+</html>
