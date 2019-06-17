@@ -1,52 +1,275 @@
 <!DOCTYPE html>
+<!--
+Created using JS Bin http://jsbin.com
+Copyright (c) 2018 by cmrRose (http://jsbin.com/sasojat/5/edit)
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+
+<meta name="robots" content="noindex">
 <html>
 <head>
- <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+ 
+  <!-- JQuery -->
+  <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  
+  <!-- Load Leaflet from CDN-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet-src.js"></script>
 
-        <title>LEAD Rescue</title>
-
-
-
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet"> 
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css" />
-        <link rel="stylesheet" href="style.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-        <script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"></script>
-        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>  
+  <title>LEAD Rescue</title>
+<style id="he">
+#map{
+  height: 750px;
+  width: 600px;
+}
+</style>
 </head>
 <body>
-    <div id = "info"> 
-      <h2 style> Dogs! <h2></div>
-		<div id="map" style="width: 800px; height: 800px"></div>
+  <h1 style="font-family:verdana; width: 700px;"> LEAD Rescue Families </h1>
 
 
-		<script>
-  		  var map = L.map('map',{ center: [41.87, -87.70], zoom: 11});
+<!-- Filter selection -->
 
-  		  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { attribution: '© OpenStreetMap' }).addTo(map); 
+<p style="font-family:verdana; width: 700px;">Filter by Chicago Neighborhood or City: 
+  <select id="filter" name="filter">
+    <option value="">No Filter</option>
+	<option value="Alsip">Alsip, IL</option>
+	<option value="Braceville">Braceville, IL</option>
+	<option value="Broadview">Broadview, IL</option>
+	<option value="Chicago:  Armour Square">Chicago:  Armour Square</option>
+	<option value="Chicago:  Beverly">Chicago:  Beverly</option>
+	<option value="Chicago:  Bridgeport">Chicago:  Bridgeport</option>
+	<option value="Chicago:  Brighton Park">Chicago:  Brighton Park</option>
+	<option value="Chicago:  Dunning">Chicago:  Dunning</option>
+	<option value="Chicago:  Edgewater">Chicago:  Edgewater</option>
+	<option value="Chicago:  Gage Park">Chicago:  Gage Park</option>
+	<option value="Chicago:  Garfield Ridge">Chicago:  Garfield Ridge</option>
+	<option value="Chicago:  Hegewisch">Chicago:  Hegewisch</option>
+	<option value="Chicago:  Humboldt Park">Chicago:  Humboldt Park</option>
+	<option value="Chicago:  Hyde Park">Chicago:  Hyde Park</option>
+	<option value="Chicago:  Lakeview">Chicago:  Lakeview</option>
+	<option value="Chicago:  Lincoln Park">Chicago:  Lincoln Park</option>
+	<option value="Chicago:  Lincoln Square">Chicago:  Lincoln Square</option>
+	<option value="Chicago:  Logan Square">Chicago:  Logan Square</option>
+	<option value="Chicago:  Loop">Chicago:  Loop</option>
+	<option value="Chicago:  Lower West Side">Chicago:  Lower West Side</option>
+	<option value="Chicago:  McKinley Park">Chicago:  McKinley Park</option>
+	<option value="Chicago:  Near North Side">Chicago:  Near North Side</option>
+	<option value="Chicago:  Near South Side">Chicago:  Near South Side</option>
+	<option value="Chicago:  Near West Side">Chicago:  Near West Side</option>
+	<option value="Chicago:  New City">Chicago:  New City</option>
+	<option value="Chicago:  Norwood Park">Chicago:  Norwood Park</option>
+	<option value="Chicago:  South Deering">Chicago:  South Deering</option>
+	<option value="Chicago:  South Lawndale">Chicago:  South Lawndale</option>
+	<option value="Chicago:  Uptown">Chicago:  Uptown</option>
+	<option value="Chicago:  West Ridge">Chicago:  West Ridge</option>
+	<option value="Chicago:  West Town">Chicago:  West Town</option>
+	<option value="Cicero">Cicero, IL</option>
+	<option value="Crete">Crete, IL</option>
+	<option value="Elgin">Elgin, IL</option>
+	<option value="Evergreen Park">Evergreen Park, IL</option>
+	<option value="Forest Park">Forest Park, IL</option>
+	<option value="Glencoe">Glencoe, IL</option>
+	<option value="Glenview">Glenview, IL</option>
+	<option value="Hinsdale">Hinsdale, IL</option>
+	<option value="Hometown">Hometown, IL</option>
+	<option value="Homewood">Homewood, IL</option>
+	<option value="Lake Bluff">Lake Bluff, IL</option>
+	<option value="Lisle">Lisle, IL</option>
+	<option value="Lockport">Lockport, IL</option>
+	<option value="Lombard">Lombard, IL</option>
+	<option value="Loves Park">Loves Park, IL</option>
+	<option value="Merseilles">Merseilles, IL</option>
+	<option value="Munster">Munster, IN</option>
+	<option value="Niles">Niles, IL</option>
+	<option value="Oak Park">Oak Park, IL</option>
+	<option value="Olympia Fields">Olympia Fields, IL</option>
+	<option value="Orland Park">Orland Park, IL</option>
+	<option value="Palos Heights">Palos Heights, IL</option>
+	<option value="Urbana">Urbana, IL</option>
+	<option value="Waukegan">Waukegan, IL</option>
+	<option value="Westchester">Westchester, IL</option>
+	<option value="Wheeling">Wheeling, IL</option>
+	<option value="Willowbrook">Willowbrook, IL</option>
+	<option value="Wilmette">Wilmette, IL</option>
 
-   			    $.getJSON("dogs.geojson",function(data){
-    			// add GeoJSON layer to the map once the file is loaded
-   				 L.geoJson(data, {
 
-				    onEachFeature: function( feature, layer ){
-				      layer.bindPopup( "<strong>" + feature.properties.Name + "</strong><br/>")
-				    }
-  					}  ).addTo(map);
-  				});
+  </select></p>
+
+  
+<div id="map" ></div>
+ 
+
+  
+  
+<!-- Data as a geojson, stored in a variable -->  
+  <script type='text/javascript'>
+  var pointsData = {
+"type": "FeatureCollection",
+"name": "dogsJune17v2",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Tum Tum", "Status": "Adopted", "FullAddres": "239 W. 22nd Place, Unit 2, Chicago, IL 60616", "Address": "239 W. 22nd Place", "City": "Chicago", "State": "IL", "Zip": 60616, "Latitude": 41.851953, "Longitude": -87.633548, "CityNeighb": "Chicago:  Armour Square" }, "geometry": { "type": "Point", "coordinates": [ -87.633548, 41.851953 ] } },
+{ "type": "Feature", "properties": { "Name": "Kaiser", "Status": "Adopted", "FullAddres": "239 W. 22nd Place, Unit 2, Chicago, IL 60616", "Address": "239 W. 22nd Place", "City": "Chicago", "State": "IL", "Zip": 60616, "Latitude": 41.851953, "Longitude": -87.633548, "CityNeighb": "Chicago:  Armour Square" }, "geometry": { "type": "Point", "coordinates": [ -87.633548, 41.851953 ] } },
+{ "type": "Feature", "properties": { "Name": "Okra", "Status": "Adopted", "FullAddres": "9059 S Hamilton, Chicago, IL 60643", "Address": "9059 S Hamilton", "City": "Chicago", "State": "IL", "Zip": 60643, "Latitude": 41.728495, "Longitude": -87.675787, "CityNeighb": "Chicago:  Beverly" }, "geometry": { "type": "Point", "coordinates": [ -87.675787, 41.728495 ] } },
+{ "type": "Feature", "properties": { "Name": "Nana aka Frito", "Status": "Adopted", "FullAddres": "3354 S Aberdeen st, Chicago, IL 60608", "Address": "3354 S Aberdeen st", "City": "Chicago", "State": "IL", "Zip": 60608, "Latitude": 41.832733, "Longitude": -87.653804, "CityNeighb": "Chicago:  Bridgeport" }, "geometry": { "type": "Point", "coordinates": [ -87.653804, 41.832733 ] } },
+{ "type": "Feature", "properties": { "Name": "Chili", "Status": "Adopted", "FullAddres": "2531 S. Hillock, Chicago, IL 60608", "Address": "2531 S. Hillock", "City": "Chicago", "State": "IL", "Zip": 60608, "Latitude": 41.84615, "Longitude": -87.654091, "CityNeighb": "Chicago:  Bridgeport" }, "geometry": { "type": "Point", "coordinates": [ -87.654091, 41.84615 ] } },
+{ "type": "Feature", "properties": { "Name": "Walter", "Status": "Adopted", "FullAddres": "468 W 27th St, Chicago, IL 60616", "Address": "468 W 27th St", "City": "Chicago", "State": "IL", "Zip": 60616, "Latitude": 41.844784, "Longitude": -87.639313, "CityNeighb": "Chicago:  Bridgeport" }, "geometry": { "type": "Point", "coordinates": [ -87.639313, 41.844784 ] } },
+{ "type": "Feature", "properties": { "Name": "Dale aka Scooby", "Status": "Adopted", "FullAddres": "468 w. 27th St, Chicago, IL 60616", "Address": "468 w. 27th St", "City": "Chicago", "State": "IL", "Zip": 60616, "Latitude": 41.844784, "Longitude": -87.639313, "CityNeighb": "Chicago:  Bridgeport" }, "geometry": { "type": "Point", "coordinates": [ -87.639313, 41.844784 ] } },
+{ "type": "Feature", "properties": { "Name": "Shiney", "Status": "Adopted", "FullAddres": "4416 S. Spaulding Ave, Apt 206, Chicago, IL 60632", "Address": "4416 S. Spaulding Ave", "City": "Chicago", "State": "IL", "Zip": 60632, "Latitude": 41.812867, "Longitude": -87.706702, "CityNeighb": "Chicago:  Brighton Park" }, "geometry": { "type": "Point", "coordinates": [ -87.706702, 41.812867 ] } },
+{ "type": "Feature", "properties": { "Name": "Cameron & Venom", "Status": "Adopted", "FullAddres": "3523 S. Washtenaw Ave., Chicago, IL 60632", "Address": "3523 S. Washtenaw Ave.", "City": "Chicago", "State": "IL", "Zip": 60632, "Latitude": 41.829435, "Longitude": -87.69201, "CityNeighb": "Chicago:  Brighton Park" }, "geometry": { "type": "Point", "coordinates": [ -87.69201, 41.829435 ] } },
+{ "type": "Feature", "properties": { "Name": "Holy Mackeral", "Status": "Foster", "FullAddres": "3523 S. Washtenaw Ave, Chicago, IL 60632", "Address": "3523 S. Washtenaw Ave", "City": "Chicago", "State": "IL", "Zip": 60632, "Latitude": 41.829435, "Longitude": -87.69201, "CityNeighb": "Chicago:  Brighton Park" }, "geometry": { "type": "Point", "coordinates": [ -87.69201, 41.829435 ] } },
+{ "type": "Feature", "properties": { "Name": "Sinatra aka Soren", "Status": "Adopted", "FullAddres": "8121 W Waveland Ave, Chicago, IL 60634", "Address": "8121 W Waveland Ave", "City": "Chicago", "State": "IL", "Zip": 60634, "Latitude": 41.946622, "Longitude": -87.830017, "CityNeighb": "Chicago:  Dunning" }, "geometry": { "type": "Point", "coordinates": [ -87.830017, 41.946622 ] } },
+{ "type": "Feature", "properties": { "Name": "Delilah aka Judy Lu", "Status": "Adopted", "FullAddres": "5860 N. Kenmore Ave, Apt 612, Chicago, IL 60660", "Address": "5860 N. Kenmore Ave", "City": "Chicago", "State": "IL", "Zip": 60660, "Latitude": 41.989141, "Longitude": -87.657189, "CityNeighb": "Chicago:  Edgewater" }, "geometry": { "type": "Point", "coordinates": [ -87.657189, 41.989141 ] } },
+{ "type": "Feature", "properties": { "Name": "Turbo", "Status": "Adopted", "FullAddres": "5016 S. Washtenaw Ave, Apt 1, Chicago, IL 60632", "Address": "5016 S. Washtenaw Ave", "City": "Chicago", "State": "IL", "Zip": 60632, "Latitude": 41.802291, "Longitude": -87.691952, "CityNeighb": "Chicago:  Gage Park" }, "geometry": { "type": "Point", "coordinates": [ -87.691952, 41.802291 ] } },
+{ "type": "Feature", "properties": { "Name": "Energizer Bunny aka", "Status": "Adopted", "FullAddres": "5637 S. Neenah, Chicago, IL 60638", "Address": "5637 S. Neenah", "City": "Chicago", "State": "IL", "Zip": 60638, "Latitude": 41.789289, "Longitude": -87.785064, "CityNeighb": "Chicago:  Garfield Ridge" }, "geometry": { "type": "Point", "coordinates": [ -87.785064, 41.789289 ] } },
+{ "type": "Feature", "properties": { "Name": "Cassie", "Status": "Adopted", "FullAddres": "13418 S. Burley, Chicago, Illinois 60633", "Address": "13418 S. Burley", "City": "Chicago", "State": "IL", "Zip": 60633, "Latitude": 41.651271, "Longitude": -87.545079, "CityNeighb": "Chicago:  Hegewisch" }, "geometry": { "type": "Point", "coordinates": [ -87.545079, 41.651271 ] } },
+{ "type": "Feature", "properties": { "Name": "Ihana", "Status": "Foster", "FullAddres": "4448 W. Walton St., Chicago, IL 60651", "Address": "4448 W. Walton St.", "City": "Chicago", "State": "IL", "Zip": 60651, "Latitude": 41.898174, "Longitude": -87.737988, "CityNeighb": "Chicago:  Humboldt Park" }, "geometry": { "type": "Point", "coordinates": [ -87.737988, 41.898174 ] } },
+{ "type": "Feature", "properties": { "Name": "Maya", "Status": "Adopted", "FullAddres": "5130 S. Kenwood Ave, Apt 408, Chicago, IL 60615", "Address": "5130 S. Kenwood Ave", "City": "Chicago", "State": "IL", "Zip": 60615, "Latitude": 41.801392, "Longitude": -87.593905, "CityNeighb": "Chicago:  Hyde Park" }, "geometry": { "type": "Point", "coordinates": [ -87.593905, 41.801392 ] } },
+{ "type": "Feature", "properties": { "Name": "Chickpea aka Emmi", "Status": "Adopted", "FullAddres": "1744 W. Belmont Ave, Apt 1, Chicago, IL 60657", "Address": "1744 W. Belmont Ave", "City": "Chicago", "State": "IL", "Zip": 60657, "Latitude": 41.939904, "Longitude": -87.672887, "CityNeighb": "Chicago:  Lakeview" }, "geometry": { "type": "Point", "coordinates": [ -87.672887, 41.939904 ] } },
+{ "type": "Feature", "properties": { "Name": "Sweet Cheeks aka Moose", "Status": "Adopted", "FullAddres": "3844 N. Ashland Ave, Unit 33, Chicago, IL 60613", "Address": "3844 N. Ashland Ave", "City": "Chicago", "State": "IL", "Zip": 60613, "Latitude": 41.952031, "Longitude": -87.669374, "CityNeighb": "Chicago:  Lakeview" }, "geometry": { "type": "Point", "coordinates": [ -87.669374, 41.952031 ] } },
+{ "type": "Feature", "properties": { "Name": "Honey Badger aka Georgie", "Status": "Adopted", "FullAddres": "550 W Surf St, Unit 219, Chicago, IL 60657", "Address": "550 W Surf St", "City": "Chicago", "State": "IL", "Zip": 60657, "Latitude": 41.934298, "Longitude": -87.643819, "CityNeighb": "Chicago:  Lakeview" }, "geometry": { "type": "Point", "coordinates": [ -87.643819, 41.934298 ] } },
+{ "type": "Feature", "properties": { "Name": "Skipper", "Status": "Adopted", "FullAddres": "935 W. Dakin Street Apt 1W, Chicago, IL 60613", "Address": "935 W. Dakin Street Apt 1W", "City": "Chicago", "State": "IL", "Zip": 60613, "Latitude": 41.953355, "Longitude": -87.653502, "CityNeighb": "Chicago:  Lakeview" }, "geometry": { "type": "Point", "coordinates": [ -87.653502, 41.953355 ] } },
+{ "type": "Feature", "properties": { "Name": "Shakira", "Status": "Adopted", "FullAddres": "1955 N Halsted st, Unit 1, Chicago, Il 60614", "Address": "1955 N Halsted st", "City": "Chicago", "State": "Il", "Zip": 60614, "Latitude": 41.917582, "Longitude": -87.648134, "CityNeighb": "Chicago:  Lincoln Park" }, "geometry": { "type": "Point", "coordinates": [ -87.648134, 41.917582 ] } },
+{ "type": "Feature", "properties": { "Name": "Pochantas aka Kaia", "Status": "Adopted", "FullAddres": "2010 W. Superior St. Apt 1, Chicago, IL 60612", "Address": "2010 W. Superior St. Apt 1", "City": "Chicago", "State": "IL", "Zip": 60612, "Latitude": 41.894953, "Longitude": -87.677544, "CityNeighb": "Chicago:  Lincoln Park" }, "geometry": { "type": "Point", "coordinates": [ -87.677544, 41.894953 ] } },
+{ "type": "Feature", "properties": { "Name": "Wombat aka Curtis", "Status": "Adopted", "FullAddres": "2514 N Lincoln Ave Apt, Unit 3, Chicago, Illinois 60614", "Address": "2514 N Lincoln Ave Apt", "City": "Chicago", "State": "IL", "Zip": 60614, "Latitude": 41.927449, "Longitude": -87.651817, "CityNeighb": "Chicago:  Lincoln Park" }, "geometry": { "type": "Point", "coordinates": [ -87.651817, 41.927449 ] } },
+{ "type": "Feature", "properties": { "Name": "Scoops", "Status": "Adopted", "FullAddres": "2252 N. Fremont St., Unit 1, Chicago, IL 60614", "Address": "2252 N. Fremont St.", "City": "Chicago", "State": "IL", "Zip": 60614, "Latitude": 41.923347, "Longitude": -87.651374, "CityNeighb": "Chicago:  Lincoln Park" }, "geometry": { "type": "Point", "coordinates": [ -87.651374, 41.923347 ] } },
+{ "type": "Feature", "properties": { "Name": "Squibbles", "Status": "Adopted", "FullAddres": "637 N Wells St, Apt 2814, Chicago, Illinois 60654", "Address": "637 N Wells St", "City": "Chicago", "State": "IL", "Zip": 60613, "Latitude": 41.913734, "Longitude": -87.644543, "CityNeighb": "Chicago:  Lincoln Park" }, "geometry": { "type": "Point", "coordinates": [ -87.644543, 41.913734 ] } },
+{ "type": "Feature", "properties": { "Name": "Tickles aka Daisy", "Status": "Adopted", "FullAddres": "4866 N Talman Ave. #3A, Chicago, IL 60625", "Address": "4866 N Talman Ave. #3A", "City": "Chicago", "State": "IL", "Zip": 60625, "Latitude": 41.970577, "Longitude": -87.695446, "CityNeighb": "Chicago:  Lincoln Square" }, "geometry": { "type": "Point", "coordinates": [ -87.695446, 41.970577 ] } },
+{ "type": "Feature", "properties": { "Name": "Papaya aka Ailey", "Status": "Adopted", "FullAddres": "2046 W. Summerdale Ave., Chicago, IL 60625", "Address": "2046 W. Summerdale Ave.", "City": "Chicago", "State": "IL", "Zip": 60625, "Latitude": 41.979002, "Longitude": -87.681398, "CityNeighb": "Chicago:  Lincoln Square" }, "geometry": { "type": "Point", "coordinates": [ -87.681398, 41.979002 ] } },
+{ "type": "Feature", "properties": { "Name": "Cookie Dough aka Ellie", "Status": "Adopted", "FullAddres": "2706 W CORTLAND ST, APT 3, CHICAGO, Illinois 60647", "Address": "2706 W CORTLAND ST", "City": "Chicago", "State": "IL", "Zip": 60647, "Latitude": 41.915839, "Longitude": -87.694961, "CityNeighb": "Chicago:  Logan Square" }, "geometry": { "type": "Point", "coordinates": [ -87.694961, 41.915839 ] } },
+{ "type": "Feature", "properties": { "Name": "Rogue aka Lily", "Status": "Adopted", "FullAddres": "1125 S. Park Terrace, Chicago, IL 60605", "Address": "1125 S. Park Terrace", "City": "Chicago", "State": "IL", "Zip": 60605, "Latitude": 41.868927, "Longitude": -87.62958, "CityNeighb": "Chicago:  Loop" }, "geometry": { "type": "Point", "coordinates": [ -87.62958, 41.868927 ] } },
+{ "type": "Feature", "properties": { "Name": "Phillip", "Status": "Adopted", "FullAddres": "600 S. Dearborn Apt 611, Chicago, IL 60605", "Address": "600 S. Dearborn Apt 611", "City": "Chicago", "State": "IL", "Zip": 60605, "Latitude": 41.874043, "Longitude": -87.629449, "CityNeighb": "Chicago:  Loop" }, "geometry": { "type": "Point", "coordinates": [ -87.629449, 41.874043 ] } },
+{ "type": "Feature", "properties": { "Name": "Guinness aka Truffle", "Status": "Adopted", "FullAddres": "1804 S Ashland Ave #2, Chicago, IL 60608", "Address": "1804 S Ashland Ave #2", "City": "Chicago", "State": "IL", "Zip": 60608, "Latitude": 41.857528, "Longitude": -87.66655, "CityNeighb": "Chicago:  Lower West Side" }, "geometry": { "type": "Point", "coordinates": [ -87.66655, 41.857528 ] } },
+{ "type": "Feature", "properties": { "Name": "Cherry aka Sophie", "Status": "Adopted", "FullAddres": "3640 S. Hermitage, Chicago, Illinois 60609", "Address": "3640 S. Hermitage", "City": "Chicago", "State": "IL", "Zip": 60609, "Latitude": 41.827527, "Longitude": -87.669457, "CityNeighb": "Chicago:  McKinley Park" }, "geometry": { "type": "Point", "coordinates": [ -87.669457, 41.827527 ] } },
+{ "type": "Feature", "properties": { "Name": "Roger", "Status": "Adopted", "FullAddres": "3641 S. Wood St, Chicago, IL 60609", "Address": "3641 S. Wood St", "City": "Chicago", "State": "IL", "Zip": 60609, "Latitude": 41.827456, "Longitude": -87.669974, "CityNeighb": "Chicago:  McKinley Park" }, "geometry": { "type": "Point", "coordinates": [ -87.669974, 41.827456 ] } },
+{ "type": "Feature", "properties": { "Name": "Sandwich aka Earl of Sandwich", "Status": "Adopted", "FullAddres": "320 W. Illinois St #C116, Chicago, IL 60654", "Address": "320 W. Illinois St #C116", "City": "Chicago", "State": "IL", "Zip": 60654, "Latitude": 41.891174, "Longitude": -87.636315, "CityNeighb": "Chicago:  Near North Side" }, "geometry": { "type": "Point", "coordinates": [ -87.636315, 41.891174 ] } },
+{ "type": "Feature", "properties": { "Name": "Beanie", "Status": "Adopted", "FullAddres": "20 E. Goethe St., Unit 606, Chicago, IL 60610", "Address": "20 E. Goethe St.", "City": "Chicago", "State": "IL", "Zip": 60610, "Latitude": 41.90623, "Longitude": -87.627962, "CityNeighb": "Chicago:  Near North Side" }, "geometry": { "type": "Point", "coordinates": [ -87.627962, 41.90623 ] } },
+{ "type": "Feature", "properties": { "Name": "Raggedy Ann aka Sydnee", "Status": "Adopted", "FullAddres": "1440 N Lake Shore Dr., #17AC, Chicago, IL 60610", "Address": "1440 N Lake Shore Dr.", "City": "Chicago", "State": "IL", "Zip": 60610, "Latitude": 41.909014, "Longitude": -87.626585, "CityNeighb": "Chicago:  Near North Side" }, "geometry": { "type": "Point", "coordinates": [ -87.626585, 41.909014 ] } },
+{ "type": "Feature", "properties": { "Name": "Pinto aka Winnie", "Status": "Adopted", "FullAddres": "1255 S. State Street, Chicago, IL 60605", "Address": "1255 S. State Street", "City": "Chicago", "State": "IL", "Zip": 60605, "Latitude": 41.865933, "Longitude": -87.626959, "CityNeighb": "Chicago:  Near South Side" }, "geometry": { "type": "Point", "coordinates": [ -87.626959, 41.865933 ] } },
+{ "type": "Feature", "properties": { "Name": "Milo", "Status": "Adopted", "FullAddres": "165 N. Desplaines Street, Unit 510, Chicago, IL 60661", "Address": "165 N. Desplaines Street", "City": "Chicago", "State": "IL", "Zip": 60661, "Latitude": 41.885078, "Longitude": -87.644074, "CityNeighb": "Chicago:  Near West Side" }, "geometry": { "type": "Point", "coordinates": [ -87.644074, 41.885078 ] } },
+{ "type": "Feature", "properties": { "Name": "Figgy Pudding aka Chino", "Status": "Adopted", "FullAddres": "4609 South Winchester Ave, Chicago, ill 60609", "Address": "4609 South Winchester Ave", "City": "Chicago", "State": "IL", "Zip": 60609, "Latitude": 41.810026, "Longitude": -87.673169, "CityNeighb": "Chicago:  New City" }, "geometry": { "type": "Point", "coordinates": [ -87.673169, 41.810026 ] } },
+{ "type": "Feature", "properties": { "Name": "Buddy Halligan aka Petey", "Status": "Adopted", "FullAddres": "6544 W. Palatine Ave., Chicago, IL 60631", "Address": "6544 W. Palatine Ave.", "City": "Chicago", "State": "IL", "Zip": 60631, "Latitude": 41.995709, "Longitude": -87.791745, "CityNeighb": "Chicago:  Norwood Park" }, "geometry": { "type": "Point", "coordinates": [ -87.791745, 41.995709 ] } },
+{ "type": "Feature", "properties": { "Name": "Casper", "Status": "Adopted", "FullAddres": "6819 West Foster Ave, Chicago, IL 60656", "Address": "6819 West Foster Ave", "City": "Chicago", "State": "IL", "Zip": 60656, "Latitude": 41.975311, "Longitude": -87.798404, "CityNeighb": "Chicago:  Norwood Park" }, "geometry": { "type": "Point", "coordinates": [ -87.798404, 41.975311 ] } },
+{ "type": "Feature", "properties": { "Name": "Green Bean aka Hank", "Status": "Adopted", "FullAddres": "2801 E. 96th St, Chicago, IL 60617", "Address": "2801 E. 96th St", "City": "Chicago", "State": "IL", "Zip": 60617, "Latitude": 41.720591, "Longitude": -87.556365, "CityNeighb": "Chicago:  South Deering" }, "geometry": { "type": "Point", "coordinates": [ -87.556365, 41.720591 ] } },
+{ "type": "Feature", "properties": { "Name": "Gummy Bear", "Status": "Adopted", "FullAddres": "2140 S. Washtenaw Ave, Chicago, IL 60608", "Address": "2140 S. Washtenaw Ave", "City": "Chicago", "State": "IL", "Zip": 60608, "Latitude": 41.85254, "Longitude": -87.693369, "CityNeighb": "Chicago:  South Lawndale" }, "geometry": { "type": "Point", "coordinates": [ -87.693369, 41.85254 ] } },
+{ "type": "Feature", "properties": { "Name": "Orzo aka Russo", "Status": "Adopted", "FullAddres": "1247 W. Leland Ave, #2, Chicago, Illinois 60640", "Address": "1247 W. Leland Ave", "City": "Chicago", "State": "IL", "Zip": 60640, "Latitude": 41.967028, "Longitude": -87.661554, "CityNeighb": "Chicago:  Uptown" }, "geometry": { "type": "Point", "coordinates": [ -87.661554, 41.967028 ] } },
+{ "type": "Feature", "properties": { "Name": "Tomas", "Status": "Adopted", "FullAddres": "2326 West Farwell Ave., 1E, Chicago, IL 60645", "Address": "2326 West Farwell Ave.", "City": "Chicago", "State": "IL", "Zip": 60645, "Latitude": 42.006538, "Longitude": -87.68918, "CityNeighb": "Chicago:  West Ridge" }, "geometry": { "type": "Point", "coordinates": [ -87.68918, 42.006538 ] } },
+{ "type": "Feature", "properties": { "Name": "Lentil aka Thor", "Status": "Adopted", "FullAddres": "1503 North Bosworth #1, Chicago, IL 60642", "Address": "1503 North Bosworth #1", "City": "Chicago", "State": "IL", "Zip": 60642, "Latitude": 41.909023, "Longitude": -87.666139, "CityNeighb": "Chicago:  West Town" }, "geometry": { "type": "Point", "coordinates": [ -87.666139, 41.909023 ] } },
+{ "type": "Feature", "properties": { "Name": "Apollo Creed aka Apollo", "Status": "Adopted", "FullAddres": "815 N.Marshfield Ave, Apt 601, Chicago, IL 60622", "Address": "815 N.Marshfield Ave", "City": "Chicago", "State": "IL", "Zip": 60622, "Latitude": 41.896636, "Longitude": -87.668141, "CityNeighb": "Chicago:  West Town" }, "geometry": { "type": "Point", "coordinates": [ -87.668141, 41.896636 ] } },
+{ "type": "Feature", "properties": { "Name": "Bonnie and Clyde", "Status": "Adopted", "FullAddres": "448 N Carpenter St, Unit E, Chicago, IL 60642", "Address": "448 N Carpenter St", "City": "Chicago", "State": "IL", "Zip": 60642, "Latitude": 41.890275, "Longitude": -87.6539, "CityNeighb": "Chicago:  West Town" }, "geometry": { "type": "Point", "coordinates": [ -87.6539, 41.890275 ] } },
+{ "type": "Feature", "properties": { "Name": "Duke", "Status": "Adopted", "FullAddres": "1166 Northbury Lane C1, Wheeling, IL 60090", "Address": "1166 Northbury Lane C1", "City": "Wheeling", "State": "IL", "Zip": 60090, "Latitude": 42.152783, "Longitude": -87.945612, "CityNeighb": "Wheeling" }, "geometry": { "type": "Point", "coordinates": [ -87.945612, 42.152783 ] } },
+{ "type": "Feature", "properties": { "Name": "Tapioca aka Maisy", "Status": "Adopted", "FullAddres": "15401 Royal Georgian Road, Orland Park, IL 60462", "Address": "15401 Royal Georgian Road", "City": "Orland Park", "State": "IL", "Zip": 60462, "Latitude": 41.61061, "Longitude": -87.836371, "CityNeighb": "Orland Park" }, "geometry": { "type": "Point", "coordinates": [ -87.836371, 41.61061 ] } },
+{ "type": "Feature", "properties": { "Name": "Paisley aka Simone", "Status": "Adopted", "FullAddres": "20714 Greenwood Ct, Olympia Fields, IL 60461", "Address": "20714 Greenwood Ct", "City": "Olympia Fields", "State": "IL", "Zip": 60461, "Latitude": 41.512705, "Longitude": -87.696481, "CityNeighb": "Olympia Fields" }, "geometry": { "type": "Point", "coordinates": [ -87.696481, 41.512705 ] } },
+{ "type": "Feature", "properties": { "Name": "Trooper", "Status": "Adopted", "FullAddres": "15 E. North Ave, Apt 3, Lake Bluff, IL 60044", "Address": "15 E. North Ave", "City": "Lake Bluff", "State": "IL", "Zip": 60044, "Latitude": 42.280335, "Longitude": -87.845499, "CityNeighb": "Lake Bluff" }, "geometry": { "type": "Point", "coordinates": [ -87.845499, 42.280335 ] } },
+{ "type": "Feature", "properties": { "Name": "Whip Cream aka Millie", "Status": "Adopted", "FullAddres": "1510 Central Ave, Wilmette, IL 60091", "Address": "1510 Central Ave", "City": "Wilmette", "State": "IL", "Zip": 60091, "Latitude": 42.073986, "Longitude": -87.715068, "CityNeighb": "Wilmette" }, "geometry": { "type": "Point", "coordinates": [ -87.715068, 42.073986 ] } },
+{ "type": "Feature", "properties": { "Name": "Aurora", "Status": "Adopted", "FullAddres": "4727 W. 128th Place, Alsip, IL 60803", "Address": "4727 W. 128th Place", "City": "Alsip", "State": "IL", "Zip": 60803, "Latitude": 41.657714, "Longitude": -87.736843, "CityNeighb": "Alsip" }, "geometry": { "type": "Point", "coordinates": [ -87.736843, 41.657714 ] } },
+{ "type": "Feature", "properties": { "Name": "Li Shang aka Alekzander", "Status": "Adopted", "FullAddres": "170 Wilcox Ave, Elgin, IL 60123", "Address": "170 Wilcox Ave", "City": "Elgin", "State": "IL", "Zip": 60123, "Latitude": 42.029975, "Longitude": -88.298409, "CityNeighb": "Elgin" }, "geometry": { "type": "Point", "coordinates": [ -88.298409, 42.029975 ] } },
+{ "type": "Feature", "properties": { "Name": "Snow White aka Zoey", "Status": "Adopted", "FullAddres": "2628 S 10th Ave, Broadview, IL 60155", "Address": "2628 S 10th Ave", "City": "Broadview", "State": "IL", "Zip": 60155, "Latitude": 41.855839, "Longitude": -87.844421, "CityNeighb": "Broadview" }, "geometry": { "type": "Point", "coordinates": [ -87.844421, 41.855839 ] } },
+{ "type": "Feature", "properties": { "Name": "Mulan aka Molly Rose", "Status": "Adopted", "FullAddres": "3607 Ronald Road, Crete, IL 60417", "Address": "3607 Ronald Road", "City": "Crete", "State": "IL", "Zip": 60417, "Latitude": 41.463006, "Longitude": -87.585452, "CityNeighb": "Crete" }, "geometry": { "type": "Point", "coordinates": [ -87.585452, 41.463006 ] } },
+{ "type": "Feature", "properties": { "Name": "Nikki", "Status": "Adopted", "FullAddres": "355 W. Harding Road, Lombard, IL 60148", "Address": "355 W. Harding Road", "City": "Lombard", "State": "IL", "Zip": 60148, "Latitude": 41.87228, "Longitude": -88.026079, "CityNeighb": "Lombard" }, "geometry": { "type": "Point", "coordinates": [ -88.026079, 41.87228 ] } },
+{ "type": "Feature", "properties": { "Name": "Paloma", "Status": "Adopted", "FullAddres": "717 E. Hosmer St., Loves Park, IL 61111", "Address": "717 E. Hosmer St.", "City": "Loves Park", "State": "IL", "Zip": 61111, "Latitude": 42.321155, "Longitude": -89.053453, "CityNeighb": "Loves Park" }, "geometry": { "type": "Point", "coordinates": [ -89.053453, 42.321155 ] } },
+{ "type": "Feature", "properties": { "Name": "Lima aka Jinora", "Status": "Adopted", "FullAddres": "2605 Landis Farm Rd, Urbana, IL 61802", "Address": "2605 Landis Farm Rd", "City": "Urbana", "State": "IL", "Zip": 61802, "Latitude": 40.140569, "Longitude": -88.18413, "CityNeighb": "Urbana" }, "geometry": { "type": "Point", "coordinates": [ -88.18413, 40.140569 ] } },
+{ "type": "Feature", "properties": { "Name": "Garbanzo aka Bear", "Status": "Adopted", "FullAddres": "915 Burnham Ct, Glenview, IL 60025", "Address": "915 Burnham Ct", "City": "Glenview", "State": "IL", "Zip": 60025, "Latitude": 42.071576, "Longitude": -87.826224, "CityNeighb": "Glenview" }, "geometry": { "type": "Point", "coordinates": [ -87.826224, 42.071576 ] } },
+{ "type": "Feature", "properties": { "Name": "Navy aka Oxford", "Status": "Adopted", "FullAddres": "1014 Holly Lane, Munster, IN 46321", "Address": "1014 Holly Lane", "City": "Munster", "State": "IN", "Zip": 46321, "Latitude": 41.546538, "Longitude": -87.503972, "CityNeighb": "Munster" }, "geometry": { "type": "Point", "coordinates": [ -87.503972, 41.546538 ] } },
+{ "type": "Feature", "properties": { "Name": "Cowpea aka Valerie", "Status": "Adopted", "FullAddres": "529 N. Grant St, Hinsdale, IL 60521", "Address": "529 N. Grant St", "City": "Hinsdale", "State": "IL", "Zip": 60521, "Latitude": 41.811233, "Longitude": -87.932293, "CityNeighb": "Hinsdale" }, "geometry": { "type": "Point", "coordinates": [ -87.932293, 41.811233 ] } },
+{ "type": "Feature", "properties": { "Name": "Bush's Baked Beans aka Chewie", "Status": "Adopted", "FullAddres": "346 Clark St, Marseilles, IL 61341", "Address": "346 Clark St", "City": "Merseilles", "State": "IL", "Zip": 61341, "Latitude": 41.331286, "Longitude": -88.712487, "CityNeighb": "Merseilles" }, "geometry": { "type": "Point", "coordinates": [ -88.712487, 41.331286 ] } },
+{ "type": "Feature", "properties": { "Name": "Adzuki aka Harley", "Status": "Adopted", "FullAddres": "925 E. 7th St, Lockport, IL 60441", "Address": "925 E. 7th St", "City": "Lockport", "State": "IL", "Zip": 60441, "Latitude": 41.58984, "Longitude": -88.041054, "CityNeighb": "Lockport" }, "geometry": { "type": "Point", "coordinates": [ -88.041054, 41.58984 ] } },
+{ "type": "Feature", "properties": { "Name": "Pita Chip aka Shiloh", "Status": "Adopted", "FullAddres": "1006 Woodbine Ave, Oak Park, IL 60302", "Address": "1006 Woodbine Ave", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.903772, "Longitude": -87.79911, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.79911, 41.903772 ] } },
+{ "type": "Feature", "properties": { "Name": "Charlotte aka Sylvie", "Status": "Adopted", "FullAddres": "729 Inverness Rd, Lisle, IL 60532", "Address": "729 Inverness Rd", "City": "Lisle", "State": "IL", "Zip": 60532, "Latitude": 41.78773, "Longitude": -88.066182, "CityNeighb": "Lisle" }, "geometry": { "type": "Point", "coordinates": [ -88.066182, 41.78773 ] } },
+{ "type": "Feature", "properties": { "Name": "Topper", "Status": "Adopted", "FullAddres": "2020 Kellogg Ave, Waukegan, IL 60087", "Address": "2020 Kellogg Ave", "City": "Waukegan", "State": "IL", "Zip": 60087, "Latitude": 42.389018, "Longitude": -87.859105, "CityNeighb": "Waukegan" }, "geometry": { "type": "Point", "coordinates": [ -87.859105, 42.389018 ] } },
+{ "type": "Feature", "properties": { "Name": "Wrigley aka Benito", "Status": "Adopted", "FullAddres": "18408 Martin Avenue, Homewood, IL 60430", "Address": "18408 Martin Avenue", "City": "Homewood", "State": "IL", "Zip": 60430, "Latitude": 41.5551, "Longitude": -87.667035, "CityNeighb": "Homewood" }, "geometry": { "type": "Point", "coordinates": [ -87.667035, 41.5551 ] } },
+{ "type": "Feature", "properties": { "Name": "Princess Fiona aka Chrissy", "Status": "Adopted", "FullAddres": "10S140 Leonard Dr, Willowbrook, IL 60527", "Address": "10S140 Leonard Dr", "City": "Willowbrook", "State": "IL", "Zip": 60527, "Latitude": 41.727471, "Longitude": -87.962938, "CityNeighb": "Willowbrook" }, "geometry": { "type": "Point", "coordinates": [ -87.962938, 41.727471 ] } },
+{ "type": "Feature", "properties": { "Name": "Mr. Winky aka Winston", "Status": "Adopted", "FullAddres": "715 Washington Blvd, 2D, Oak Park, IL 60302", "Address": "715 Washington Blvd", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.881425, "Longitude": -87.79284, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.79284, 41.881425 ] } },
+{ "type": "Feature", "properties": { "Name": "Sami", "Status": "Adopted", "FullAddres": "2949 Ashton Court, Westchester, IL 60154", "Address": "2949 Ashton Court", "City": "Westchester", "State": "IL", "Zip": 60154, "Latitude": 41.835821, "Longitude": -87.895022, "CityNeighb": "Westchester" }, "geometry": { "type": "Point", "coordinates": [ -87.895022, 41.835821 ] } },
+{ "type": "Feature", "properties": { "Name": "Sprinkles", "Status": "Adopted", "FullAddres": "368 Jackson Avenue, Glencoe, IL 60022", "Address": "368 Jackson Avenue", "City": "Glencoe", "State": "IL", "Zip": 60022, "Latitude": 42.122695, "Longitude": -87.750832, "CityNeighb": "Glencoe" }, "geometry": { "type": "Point", "coordinates": [ -87.750832, 42.122695 ] } },
+{ "type": "Feature", "properties": { "Name": "Mostaccioli aka Noodle", "Status": "Adopted", "FullAddres": "715 N. Grove Ave, Oak Park, IL 60302", "Address": "715 N. Grove Ave", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.898644, "Longitude": -87.796617, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.796617, 41.898644 ] } },
+{ "type": "Feature", "properties": { "Name": "Wheezer aka Mr. Dibs", "Status": "Adopted", "FullAddres": "4600 w 88th st 2e, Hometown, Il 60456", "Address": "4600 w 88th st 2e", "City": "Hometown", "State": "Il", "Zip": 60456, "Latitude": 41.73216, "Longitude": -87.736789, "CityNeighb": "Hometown" }, "geometry": { "type": "Point", "coordinates": [ -87.736789, 41.73216 ] } },
+{ "type": "Feature", "properties": { "Name": "Railey aka Lucy", "Status": "Adopted", "FullAddres": "7755 e Dondanville Rd, Braceville, IL 60407", "Address": "7755 e Dondanville Rd", "City": "Braceville", "State": "IL", "Zip": 60407, "Latitude": 41.201338, "Longitude": -88.248535, "CityNeighb": "Braceville" }, "geometry": { "type": "Point", "coordinates": [ -88.248535, 41.201338 ] } },
+{ "type": "Feature", "properties": { "Name": "Howdy", "Status": "Adopted", "FullAddres": "3640 S 53RD AVE, 2, CICERO, Illinois 60804�", "Address": "3640 S 53RD AVE", "City": "Cicero", "State": "IL", "Zip": 60608, "Latitude": 41.8266, "Longitude": -87.757239, "CityNeighb": "Cicero" }, "geometry": { "type": "Point", "coordinates": [ -87.757239, 41.8266 ] } },
+{ "type": "Feature", "properties": { "Name": "Paleta", "Status": "Adopted", "FullAddres": "843 N. Humphrey Ave., Oak Park, IL 60302", "Address": "843 N. Humphrey Ave.", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.90174, "Longitude": -87.776859, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.776859, 41.90174 ] } },
+{ "type": "Feature", "properties": { "Name": "Pastrami aka Walter", "Status": "Adopted", "FullAddres": "6028, Ridge Ct, Lisle, IL 60532", "Address": "6028 Ridge Ct", "City": "Lisle", "State": "IL", "Zip": 60532, "Latitude": 41.776146, "Longitude": -88.066047, "CityNeighb": "Lisle" }, "geometry": { "type": "Point", "coordinates": [ -88.066047, 41.776146 ] } },
+{ "type": "Feature", "properties": { "Name": "Nashville aka Linc", "Status": "Adopted", "FullAddres": "423 S Taylor Ave, Apt 3W, Oak park, IL 60302", "Address": "423 S Taylor Ave", "City": "Oak park", "State": "IL", "Zip": 60302, "Latitude": 41.881085, "Longitude": -87.778521, "CityNeighb": "Oak park" }, "geometry": { "type": "Point", "coordinates": [ -87.778521, 41.881085 ] } },
+{ "type": "Feature", "properties": { "Name": "Marilyn Monroe", "Status": "Adopted", "FullAddres": "9420 S Utica, Evergreen park, IL 60805", "Address": "9420 S Utica", "City": "Evergreen Park", "State": "IL", "Zip": 60805, "Latitude": 41.72173, "Longitude": -87.698406, "CityNeighb": "Evergreen Park" }, "geometry": { "type": "Point", "coordinates": [ -87.698406, 41.72173 ] } },
+{ "type": "Feature", "properties": { "Name": "Bento Box aka Max", "Status": "Adopted", "FullAddres": "8500 N. Shermer, Niles, IL 60714", "Address": "8500 N. Shermer", "City": "Niles", "State": "IL", "Zip": 60714, "Latitude": 42.035962, "Longitude": -87.803442, "CityNeighb": "Niles" }, "geometry": { "type": "Point", "coordinates": [ -87.803442, 42.035962 ] } },
+{ "type": "Feature", "properties": { "Name": "Mulligan aka Blake", "Status": "Adopted", "FullAddres": "12531 S. Meade Ave., Palos Heights, IL 60463", "Address": "12531 S. Meade Ave.", "City": "Palos Heights", "State": "IL", "Zip": 60463, "Latitude": 41.663659, "Longitude": -87.770652, "CityNeighb": "Palos Heights" }, "geometry": { "type": "Point", "coordinates": [ -87.770652, 41.663659 ] } },
+{ "type": "Feature", "properties": { "Name": "Roman Candle", "Status": "Adopted", "FullAddres": "7830 Madison St, Forest Park, IL 60130", "Address": "7830 Madison St", "City": "Forest Park", "State": "IL", "Zip": 60130, "Latitude": 41.879159, "Longitude": -87.820809, "CityNeighb": "Forest Park" }, "geometry": { "type": "Point", "coordinates": [ -87.820809, 41.879159 ] } },
+{ "type": "Feature", "properties": { "Name": "Rowdy", "Status": "Adopted", "FullAddres": "616 N. Harvey Ave, Oak Park, IL 60302", "Address": "616 N. Harvey Ave", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.897109, "Longitude": -87.781395, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.781395, 41.897109 ] } },
+{ "type": "Feature", "properties": { "Name": "Etouffee aka Etta", "Status": "Adopted", "FullAddres": "616 N. Harvey Ave, Oak Park, IL 60302", "Address": "616 N. Harvey Ave", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.897109, "Longitude": -87.781395, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.781395, 41.897109 ] } },
+{ "type": "Feature", "properties": { "Name": "Gopher", "Status": "Foster", "FullAddres": "312 N. Oak Park Ave, Oak Park, IL 60302", "Address": "312 N. Oak Park Ave", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.892084, "Longitude": -87.794198, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.794198, 41.892084 ] } },
+{ "type": "Feature", "properties": { "Name": "Potluck", "Status": "Foster", "FullAddres": "616 N. Harvey Ave, Oak Park, IL 60302", "Address": "616 N. Harvey Ave", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.897109, "Longitude": -87.781395, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.781395, 41.897109 ] } },
+{ "type": "Feature", "properties": { "Name": "Dude", "Status": "Foster", "FullAddres": "9 Randolph St. #3, Oak Park, IL 60302", "Address": "9 Randolph St. #3", "City": "Oak Park", "State": "IL", "Zip": 60302, "Latitude": 41.883868, "Longitude": -87.775406, "CityNeighb": "Oak Park" }, "geometry": { "type": "Point", "coordinates": [ -87.775406, 41.883868 ] } }
+]
+}
 
 
-		</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </script>
+  
+<script id="jsbin-javascript">
+//create the map
+var map = L.map('map').setView([41.8, -88.1], 9); 
+ //basemap tiles 
+var Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+}).addTo(map);
 
 
 
-</div>
+//variable to store the layergroup
+var dataLayerGroup;
 
+//variable to store the value we want to filter out
+var filterval = document.getElementById("filter").value;
+
+//variable containing the filter function
+var colorFilter = function (feature) {
+    if (feature.properties.CityNeighb == filterval || filterval == "") return true
+ }
+
+
+//define the funtion to add the layer to the map or replace it. 
+function addLayerToMap(){
+   //remove the layer from the map entirely
+  if (map.hasLayer(dataLayerGroup)){
+    dataLayerGroup.remove();
+  }
+  //add the data layer and style based on attribute. 
+  dataLayerGroup = L.geoJson(pointsData, {
+    filter: colorFilter,
+    pointToLayer: function(feature, latlng) {
+        return new L.CircleMarker(latlng, {radius: 5, fillOpacity: 1, fillColor: '#FF6600'});
+    },
+    onEachFeature: function (feature, layer) {
+        layer.bindPopup("<strong>" + feature.properties.Name + "</strong><br/>" + feature.properties.Status + " dog in " +  feature.properties.CityNeighb);
+    }, 
+    style: function(feature){
+        return{color:  feature.properties.markercolor};
+      },  
+    }).addTo(map);
+}  
+
+
+//listener for a filter input: 
+$("#filter").on("input", function(){
+  
+  filterval = document.getElementById("filter").value;
+  console.log("the filter was changed to ", filterval); 
+
+  //add the layer to the map again, now that we have changed the filter value. 
+  addLayerToMap();
+ 
+  
+}); //end listener function 
+
+
+
+//call the funtion to add the layer to the map for the first time (before interacting with the filter). 
+addLayerToMap();
+
+
+
+</script>
 </body>
 </html>
